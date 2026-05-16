@@ -295,7 +295,7 @@ Import the provided pipeline (.zip file).
 
 Before the initial run:
 
-* Deactivate incremental load notebook activities inside the pipeline
+* Deactivate incremental load notebook activities inside the pipeline (right click on notebook and select Deactivate).
 
 This ensures only Bronze tables are created during the first execution.
 
