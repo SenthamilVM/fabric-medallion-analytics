@@ -403,7 +403,13 @@ This notebook performs the initial Silver layer creation.
 
 Once completed successfully:
 
-* 6 Silver tables will be created
+6 Silver tables will be created
+* silver_crm_customer_info
+* silver_crm_product_info
+* silver_crm_sales_details
+* silver_erp_customers
+* silver_erp_location
+* silver_erp_product_category
 
 ---
 
@@ -478,25 +484,13 @@ This notebook manually inserts additional records into the source tables to simu
 
 ---
 
-## 14. Validate Existing Row Counts
-
-Run:
-
-```text
-10_NB_INCREMENTAL_LOAD_VALIDATION
-```
-
-This captures row counts before incremental execution.
-
----
-
-## 15. Enable Incremental Notebooks
+## 14. Enable Incremental Notebooks
 
 Re-enable the incremental notebook activities inside the pipeline.
 
 ---
 
-## 16. Update Copy Activity Table Action
+## 15. Update Copy Activity Table Action
 
 For incremental testing:
 
@@ -508,7 +502,7 @@ Append
 
 inside Copy Activity table actions.
 
-### Why Append is required
+### Why Append is required ?
 
 Incremental loading should preserve existing Bronze records and add only newly arrived records.
 
@@ -527,9 +521,13 @@ would replace the existing Bronze data during every execution.
 
 ---
 
-## 17. Run Pipeline Again
+## 16. Run Pipeline Again
 
-Run the pipeline manually once again.
+Run the pipeline once again.
+
+```text
+PL_INGEST_TRANSFORM_BRONZE_TO_GOLD
+```
 
 This time:
 
@@ -538,7 +536,7 @@ This time:
 
 ---
 
-## 18. Validate Incremental Load
+## 17. Validate Incremental Load
 
 Run the notebook:
 
@@ -552,8 +550,6 @@ This validates:
 * Watermark updates
 * Bronze → Silver → Gold propagation
 * Successful incremental processing
-
----
 
 ---
 
@@ -587,8 +583,6 @@ During development, several real-world engineering challenges were handled:
 * Dynamic path generation
 * Notebook orchestration
 * Lakehouse connectivity issues
-
----
 
 ---
 
