@@ -287,11 +287,20 @@ This is required because the pipeline dynamically reads files using metadata-dri
 
 ## 5. Import Pipeline
 
-Import the provided pipeline (.zip file).
+Import the provided pipeline (.zip file) -> Create a Pipeline item and click 'Import' from the top menu and select the .zip file
+
+```text
+PL_INGEST_TRANSFORM_BRONZE_TO_GOLD.zip
+```
+This can be created manually based on the screenshots provided in the <screenshots folder>
 
 ---
 
-## 6. Disable Incremental Notebooks Temporarily
+## 6. Disable Incremental Notebooks Temporarily in Pipeline 
+
+```text
+PL_INGEST_TRANSFORM_BRONZE_TO_GOLD
+```
 
 Before the initial run:
 
@@ -303,11 +312,43 @@ This ensures only Bronze tables are created during the first execution.
 
 ## 7. Run Pipeline
 
-Run the pipeline manually.
+Run the pipeline manually. The Pipeline is parametrized based on the config_ingestion file.
+
+```text
+PL_INGEST_TRANSFORM_BRONZE_TO_GOLD
+```
 
 Once completed successfully:
 
-* 6 Bronze Delta tables will be created
+6 Bronze Delta tables will be created (The number of tables depends entirely on the number of files you are loading. Here, I'm uploading 6 data files)
+* bronze_crm_customer_info
+* bronze_crm_product_info
+* bronze_crm_sales_details
+* bronze_erp_customers
+* bronze_erp_location
+* bronze_erp_product_category 
+
+---
+
+# Important Notebook Configuration
+
+Before running any notebook:
+
+## Ensure Spark SQL is selected as the default language
+
+Although:
+
+```text
+%%sql
+```
+
+is already used at the top of notebooks, manually selecting:
+
+```text
+Spark SQL
+```
+
+as the notebook language helps avoid execution inconsistencies.
 
 ---
 
@@ -328,58 +369,23 @@ This validates:
 
 ---
 
-# Important Notebook Configuration
-
-Before running any notebook:
-
-## Ensure Spark SQL is selected
-
-Although:
-
-```text
-%%sql
-```
-
-is already used at the top of notebooks, manually selecting:
-
-```text
-Spark SQL
-```
-
-as the notebook language helps avoid execution inconsistencies.
-
----
-
 ## Default Lakehouse Configuration
 
-If notebook execution fails:
+After importing notebooks, you may encounter errors like:
+"Default Lakehouse is not accessible"
 
-Set:
+### Cause
+The notebook retains a reference to an old Lakehouse ID, even if a Lakehouse with the same name exists.
 
-```text
-sales_lakehouse
-```
+### Fix
+1. Click **Add Data**
+2. Select the correct Lakehouse
+3. Click **... → Set as Default Lakehouse**
+4. Remove the old Lakehouse reference
+5. Restart the Spark session
 
-as the default Lakehouse.
-
-### Steps
-
-* Click the three dots next to the Lakehouse
-* Select:
-
-```text
-Set as default lakehouse
-```
-
-### Why this is needed
-
-Some Fabric notebook sessions may lose the active Lakehouse attachment.
-
-Setting the correct Lakehouse as default ensures:
-
-* SQL objects resolve correctly
-* Delta tables are accessible
-* Notebook execution uses the intended workspace context
+### Note
+Fabric notebooks bind to Lakehouse ID, not name.
 
 ---
 
