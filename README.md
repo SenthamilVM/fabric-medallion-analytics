@@ -1,207 +1,72 @@
 # Fabric Medallion Analytics
 
-## Project Overview
+# Project Overview
 
-This project demonstrates an end-to-end Medallion Architecture implementation in Microsoft Fabric using dynamic pipelines, Lakehouse architecture, incremental loading, and dimensional modeling.
+This project demonstrates an end-to-end Microsoft Fabric Data Engineering solution built using the Medallion Architecture approach.
 
-The objective of this project was to simulate a real-world enterprise data engineering workflow where raw CRM and ERP data is ingested, transformed, validated, and modeled into business-ready analytical tables.
+The solution ingests data from multiple source systems including:
 
-The project was designed to focus on:
+* CSV files
+* JSON files
+* GitHub raw HTTP sources
 
-* Microsoft Fabric Lakehouse implementation
-* Metadata-driven ingestion pipelines
-* Incremental loading using watermark tables
-* Bronze → Silver → Gold transformation architecture
-* Dynamic orchestration using Fabric Pipelines
-* Multi-source ingestion (Local + GitHub)
-* Delta table processing
-* Business-ready dimensional modeling
+and processes them through Bronze, Silver and Gold layers inside a Microsoft Fabric Lakehouse.
+
+The architecture is designed to simulate a scalable enterprise analytics platform using modern Lakehouse engineering principles in Microsoft Fabric.
 
 ---
 
-# Architecture Used
+# Key Features Implemented
 
-The project follows the Medallion Architecture pattern:
-
-```text
-Source Systems
-      ↓
-Bronze Layer (Raw Data)
-      ↓
-Silver Layer (Cleaned & Standardized Data)
-      ↓
-Gold Layer (Business Model)
-      ↓
-Power BI Semantic Model
-```
+* Metadata-driven ingestion pipeline
+* Dynamic pipeline orchestration
+* Incremental loading using Watermark table
+* Delta Lakehouse architecture
+* Spark SQL transformations
+* Semantic modeling
+* SQL analytics endpoint integration
+* Direct Lake ready architecture
+* Enterprise-style monitoring and notification activities
 
 ---
 
-# Project Flow
+# Architecture
 
-## 1. Source Data Ingestion
+<p align="center">
+  <img src="screenshots/architecture_diagram.gif" alt="Fabric Medallion Architecture" width="1000"/>
+</p>
 
-Source files were collected from:
+### Data Sources
 
-* Local Lakehouse Files
-* GitHub Raw Files
+* CRM CSV / JSON files
+* ERP CSV files
+* GitHub raw files using HTTP connection
 
-Both CSV and JSON formats were used.
+### Bronze Layer
 
-A metadata-driven configuration table controls:
-
-* Source type
-* File path
-* File format
-* Target table
-* Load type
-
-This allows new files to be added without redesigning the pipeline.
-
----
-
-## 2. Bronze Layer
-
-The Bronze layer stores raw ingested data as Delta tables.
-
-### Objectives
-
-* Preserve raw source data
-* Standardize ingestion
-* Support replay/reprocessing
-* Enable downstream transformations
-
-### Features Implemented
-
-* Dynamic table loading
-* Dynamic path handling
-* GitHub HTTP ingestion
-* CSV and JSON ingestion
-* Config-driven orchestration
+* Raw ingestion layer
 * Delta table creation
+* Metadata-driven ingestion
 
----
+### Silver Layer
 
-## 3. Silver Layer
+* Data cleansing
+* Standardization
+* Business rule implementation
+* Duplicate handling
 
-The Silver layer applies data cleansing and transformation rules.
+### Gold Layer
 
-### Transformations Performed
+* Star schema model
+* Fact and Dimension tables
+* Business-ready analytical layer
 
-* Data type standardization
-* Invalid date handling
-* NULL handling
-* Sales amount correction
-* Price validation
-* Metadata column creation
+### Analytics & Reporting
 
-### Incremental Loading
-
-Incremental loading was implemented using:
-
-* Watermark control table
-* Last loaded date tracking
-* Incremental filtering logic
-
-Only newly arrived records are processed during each execution.
-
----
-
-## 4. Gold Layer
-
-The Gold layer contains business-ready analytical tables.
-
-### Data Modeling
-
-A dimensional model was implemented using:
-
-* Fact table
-* Dimension tables
-* Surrogate keys
-* Star schema concepts
-
-### Gold Layer Features
-
-* MERGE-based incremental updates
-* Customer dimension
-* Product dimension
-* Sales fact table
-* Business-ready schema
-
----
-
-# Pipeline Design
-
-A metadata-driven Fabric Pipeline was built to orchestrate ingestion.
-
-## Pipeline Workflow
-
-```text
-Lookup Config
-    ↓
-ForEach Loop
-    ↓
-Conditional Routing
-    ├── Local CSV
-    ├── Local JSON
-    └── GitHub CSV
-    ↓
-Bronze Loading
-    ↓
-Silver Incremental Processing
-    ↓
-Gold Incremental Processing
-```
-
----
-
-# Dynamic Ingestion Logic
-
-The pipeline dynamically determines:
-
-* Which source to read
-* Which format to process
-* Which target table to load
-
-This was implemented using:
-
-* Lookup Activity
-* ForEach Loop
-* IF Conditions
-* Dynamic Expressions
-* Copy Activities
-
----
-
-# Incremental Load Strategy
-
-The project implements incremental loading using watermark-based processing.
-
-## Workflow
-
-1. Read last loaded value
-2. Identify new records
-3. Load only incremental data
-4. Update watermark table
-
-This reduces unnecessary full refreshes and improves scalability.
-
----
-
-# Validation & Monitoring
-
-Validation notebooks were added to:
-
-* Verify incremental rows
-* Validate Bronze/Silver/Gold counts
-* Check successful data movement
-* Validate watermark updates
-
-Pipeline monitoring was also used to:
-
-* Validate activity execution
-* Verify successful ingestion
-* Monitor Bronze to Silver and Silver to Gold execution
+* Semantic Model
+* SQL Analytics Endpoint
+* Direct Lake ready architecture
+* Power BI reporting capability
 
 ---
 
@@ -210,33 +75,30 @@ Pipeline monitoring was also used to:
 ```text
 fabric-medallion-analytics/
 │
+├── data_source/
 ├── notebooks/
 ├── pipelines/
-├── data_source/
 ├── screenshots/
-├── sql/
 └── README.md
 ```
 
 ---
 
-# Project Setup & Execution Steps
+# Project Setup & Execution
 
 ## 1. Create Lakehouse
 
-Create a Lakehouse in Microsoft Fabric with the following name:
+Create a Lakehouse with the following name:
 
 ```text
 sales_lakehouse
 ```
 
-This project uses the Lakehouse name directly inside notebooks and SQL scripts.
-
 ---
 
-## 2. Create Configuration Table
+## 2. Create Config Table
 
-Run the notebook:
+Run notebook:
 
 ```text
 00_NB_CONFIG_INGESTION
@@ -244,42 +106,59 @@ Run the notebook:
 
 This notebook creates and populates the metadata-driven configuration table used by the ingestion pipeline.
 
-### Important
+---
 
-Update the GitHub raw file path inside the notebook before running it.
+## GitHub Raw URL Configuration
+
+For GitHub ingestion:
+
+* Open the file in GitHub
+* Click:
+
+```text
+Raw
+```
+
+* Copy the generated URL
+
+For the HTTP connection, use:
+
+```text
+https://raw.githubusercontent.com/
+```
+
+The remaining dynamic path is maintained inside the `config_ingestion` table.
+
+This allows the pipeline to dynamically ingest GitHub files.
 
 ---
 
 ## 3. Create Watermark Table
 
-Run the notebook:
+Run notebook:
 
 ```text
 01_NB_WATERMARK_TABLE_SETUP
 ```
 
-This creates the watermark control table used for incremental loading.
+This creates the watermark table used for incremental loading.
 
 ---
 
 ## 4. Upload Source Files
 
-Upload the source CSV and JSON files into the:
+Upload the CSV and JSON files into:
 
 ```text
 Lakehouse → Files
 ```
 
-section.
-
 ### Important
 
-Make sure:
+Ensure:
 
-* File names match the values inside the config_ingestion table
-* Folder structure matches the configured source paths
-
-This is required because the pipeline dynamically reads files using metadata-driven paths.
+* File names match the values inside `config_ingestion`
+* Folder structure matches configured source paths
 
 ---
 
@@ -287,54 +166,75 @@ This is required because the pipeline dynamically reads files using metadata-dri
 
 ## 5. Import Pipeline
 
-Import the provided pipeline (.zip file) -> Create a Pipeline item and click 'Import' from the top menu and select the .zip file
-
-```text
-PL_INGEST_TRANSFORM_BRONZE_TO_GOLD.zip
-```
-This can be created manually based on the screenshots provided in the <screenshots folder>
-
----
-
-## 6. Disable Incremental Notebooks Temporarily in Pipeline 
+Import the pipeline:
 
 ```text
 PL_INGEST_TRANSFORM_BRONZE_TO_GOLD
 ```
 
-Before the initial run:
+---
 
-* Deactivate incremental load notebook activities inside the pipeline (right click on notebook and select Deactivate).
+## 6. Disable Incremental Activities Initially
 
-This ensures only Bronze tables are created during the first execution.
+Before the first pipeline execution:
+
+Deactivate the following activities temporarily:
+
+* Incremental notebook activities
+* Semantic Model Refresh activity
+* Office 365 Email activity
+
+### How to deactivate
+
+* Right-click the activity
+* Select:
+
+```text
+Deactivate
+```
+
+This ensures only Bronze ingestion is executed during the initial setup.
 
 ---
 
 ## 7. Run Pipeline
 
-Run the pipeline manually. The Pipeline is parametrized based on the config_ingestion file.
-
-```text
-PL_INGEST_TRANSFORM_BRONZE_TO_GOLD
-```
+Run the pipeline manually.
 
 Once completed successfully:
 
-6 Bronze Delta tables will be created (The number of tables depends entirely on the number of files you are loading. Here, I'm uploading 6 data files)
-* bronze_crm_customer_info
-* bronze_crm_product_info
-* bronze_crm_sales_details
-* bronze_erp_customers
-* bronze_erp_location
-* bronze_erp_product_category 
+* 6 Bronze Delta tables will be created
 
 ---
 
-# Important Notebook Configuration
+## 8. Validate Bronze Layer
 
-Before running any notebook:
+Run notebook:
 
-## Ensure Spark SQL is selected as the default language
+```text
+02_NB_BRONZE_DATA_QUALITY
+```
+
+Validation checks include:
+
+* Row counts
+* Null checks
+* Duplicate checks
+* Bronze data quality validation
+
+---
+
+# Notebook Configuration
+
+Before running notebooks:
+
+Select:
+
+```text
+Spark SQL
+```
+
+as the notebook language.
 
 Although:
 
@@ -342,105 +242,75 @@ Although:
 %%sql
 ```
 
-is already used at the top of notebooks, manually selecting:
-
-```text
-Spark SQL
-```
-
-as the notebook language helps avoid execution inconsistencies.
+is already used inside notebooks, manually selecting Spark SQL helps avoid execution inconsistencies.
 
 ---
 
-## 8. Validate Bronze Layer
-
-Run the notebook:
-
-```text
-02_NB_BRONZE_DATA_QUALITY
-```
-
-This validates:
-
-* Row counts
-* Null values
-* Duplicate checks
-* General Bronze layer quality
-
----
-
-## Default Lakehouse Configuration
+# Default Lakehouse Configuration
 
 After importing notebooks, you may encounter errors like:
 "Default Lakehouse is not accessible"
 
-### Cause
-The notebook retains a reference to an old Lakehouse ID, even if a Lakehouse with the same name exists.
-
-### Fix
 1. Click **Add Data**
 2. Select the correct Lakehouse
 3. Click **... → Set as Default Lakehouse**
 4. Remove the old Lakehouse reference
 5. Restart the Spark session
 
-### Note
-Fabric notebooks bind to Lakehouse ID, not name.
+### Why this is needed
+
+The notebook retains a reference to an old Lakehouse ID, even if a Lakehouse with the same name exists. Fabric notebooks bind to Lakehouse ID, not name.
+
+Setting the correct default Lakehouse ensures:
+
+* Delta tables are accessible
+* SQL objects resolve correctly
+* Notebook execution uses the correct Lakehouse context
 
 ---
 
-# Silver Layer Setup (Initial Full Load)
+# Silver Layer Setup
 
-## 9. Run Silver Full Load Notebook
+## 9. Run Silver Full Load
 
-Run the notebook:
+Run notebook:
 
 ```text
 03_NB_SILVER_FULL_LOAD
 ```
 
-This notebook performs the initial Silver layer creation.
-
 Once completed successfully:
 
-6 Silver tables will be created
-* silver_crm_customer_info
-* silver_crm_product_info
-* silver_crm_sales_details
-* silver_erp_customers
-* silver_erp_location
-* silver_erp_product_category
+* 6 Silver tables will be created
 
 ---
 
 ## 10. Validate Silver Layer
 
-Run the notebook:
+Run notebook:
 
 ```text
 04_NB_SILVER_DATA_QUALITY
 ```
 
-This validates:
+Validation checks include:
 
-* Cleansed data
-* Transformation quality
-* Data standardization
-* Business rule implementation
+* Data cleansing validation
+* Standardization validation
+* Business rule validation
+* Silver layer quality checks
 
 ---
 
-# Gold Layer Setup (Initial Full Load)
+# Gold Layer Setup
 
-## 11. Run Gold Full Load Notebook
+## 11. Run Gold Full Load
 
-Run the notebook:
+Run notebook:
 
 ```text
 06_NB_GOLD_FULL_LOAD
 ```
-
-This creates the Gold business model.
 
 Once completed successfully:
 
@@ -451,60 +321,129 @@ Once completed successfully:
 
 ## 12. Validate Gold Layer
 
-Run the notebook:
+Run notebook:
 
 ```text
 07_NB_GOLD_DATA_QUALITY
 ```
 
-This validates:
+Validation checks include:
 
-* Fact table integrity
-* Dimension relationships
-* Surrogate key mappings
-* Gold layer business model quality
+* Fact table validation
+* Dimension relationship validation
+* Surrogate key mapping validation
+* Gold model validation
+
+---
+
+# 13. Create Semantic Model
+
+Inside:
+
+```text
+sales_lakehouse
+```
+
+click:
+
+```text
+New Semantic Model
+```
+
+Select the following tables:
+
+* `gold_fact_sales`
+* `gold_dim_customers`
+* `gold_dim_products`
+
+Create the relationships to form a proper Star Schema model.
+
+This ensures:
+
+* Direct Lake connectivity
+* Semantic layer creation
+* BI consumption readiness
+* SQL analytics compatibility
 
 ---
 
 # Incremental Load Testing
 
-Once all tables are created successfully, incremental loading can be tested.
+## 14. Insert Incremental Test Records
 
----
-
-## 13. Insert New Test Records
-
-Run the notebook:
+Run notebook:
 
 ```text
 09_NB_INCREMENTAL_TEST_DATA_LOAD
 ```
 
-This notebook manually inserts additional records into the source tables to simulate newly arrived data.
+This notebook manually inserts new records into the source tables to simulate newly arrived data.
 
 ---
 
-## 14. Enable Incremental Notebooks
+## 15. Validate Existing Row Counts
 
-Re-enable the incremental notebook activities inside the pipeline.
+Run notebook:
+
+```text
+10_NB_INCREMENTAL_LOAD_VALIDATION
+```
+
+This captures row counts before incremental execution.
 
 ---
 
-## 15. Update Copy Activity Table Action
+## 16. Enable Incremental Activities
 
-For incremental testing:
+Before running the pipeline for incremental loading:
 
-Set:
+Make sure all activities are activated again, including:
+
+* Incremental notebook activities
+
+The pipeline also includes:
+
+* Semantic Model Refresh activity
+* Office 365 Email notification activity
+
+### Semantic Model Refresh
+
+Configure the refresh activity using the Semantic Model created from:
+
+* `gold_fact_sales`
+* `gold_dim_customers`
+* `gold_dim_products`
+
+### Office 365 Email Activity
+
+Configure:
+
+* Recipient email addresses
+* Failure dependency conditions
+
+This simulates enterprise-style orchestration and monitoring
+
+---
+
+## 17. Verify Copy Activity Table Action
+
+Inside Copy Activity:
+
+Ensure table action is set to:
 
 ```text
 Append
 ```
 
-inside Copy Activity table actions.
+instead of:
 
-### Why Append is required ?
+```text
+Overwrite
+```
 
-Incremental loading should preserve existing Bronze records and add only newly arrived records.
+### Why Append is required
+
+Incremental processing should preserve existing Bronze records and append only newly arrived records.
 
 Using:
 
@@ -512,39 +451,33 @@ Using:
 Overwrite
 ```
 
-would replace the existing Bronze data during every execution.
-
-### Recommended Approach
-
-* Use Overwrite only during initial testing/setup
-* Use Append for incremental processing
+would replace the Bronze data during every execution.
 
 ---
 
-## 16. Run Pipeline Again
+## 18. Run Pipeline Again
 
-Run the pipeline once again.
-
-```text
-PL_INGEST_TRANSFORM_BRONZE_TO_GOLD
-```
+Run the pipeline manually once again.
 
 This time:
 
-* Only newly added records should flow into Silver and Gold layers
+* Newly added records should load incrementally
 * Watermark logic should prevent duplicate processing
+* Silver and Gold layers should process only new records
+* Semantic Model Refresh activity should refresh the semantic model automatically
+* Email Activity sends out an email to the recipient if the pipeline fails 
 
 ---
 
-## 17. Validate Incremental Load
+## 19. Validate Incremental Load
 
-Run the notebook:
+Run notebook:
 
 ```text
 10_NB_INCREMENTAL_LOAD_VALIDATION
 ```
 
-This validates:
+Validation checks include:
 
 * Incremental row movement
 * Watermark updates
@@ -553,67 +486,48 @@ This validates:
 
 ---
 
-# Key Features Demonstrated
-
-* Microsoft Fabric Lakehouse
-* Medallion Architecture
-* Metadata-driven pipelines
-* Dynamic ingestion
-* Incremental loading
-* Delta Lake processing
-* MERGE operations
-* GitHub HTTP ingestion
-* JSON ingestion
-* Fabric orchestration
-* Dimensional modeling
-* Data quality transformations
-
----
-
 # Challenges Solved
 
-During development, several real-world engineering challenges were handled:
-
-* Dynamic file routing
-* GitHub raw file ingestion
-* JSON and CSV handling
-* Incremental watermark logic
-* Delta MERGE conflicts
-* Pipeline conditional execution
-* Dynamic path generation
-* Notebook orchestration
-* Lakehouse connectivity issues
+* Dynamic ingestion from multiple source types
+* GitHub HTTP ingestion using raw URLs
+* Metadata-driven ETL implementation
+* Incremental processing using watermark tables
+* CSV and JSON ingestion handling
+* Delta table processing in Fabric
+* Dynamic pipeline orchestration
+* Medallion architecture implementation
 
 ---
 
 # Screenshots
 
-## Pipeline Orchestration
+The repository includes screenshots for:
 
-(Add screenshots here)
-
-## Bronze / Silver / Gold Architecture
-
-(Add screenshots here)
-
-## Incremental Loading
-
-(Add screenshots here)
-
-## Validation Outputs
-
-(Add screenshots here)
+* Pipeline execution
+* Incremental loading
+* Notebook execution
+* Bronze, Silver, and Gold tables
+* Semantic Model configuration
+* Architecture diagram
 
 ---
 
 # About This Project
 
-This project was built as part of a Microsoft Fabric Data Engineering portfolio to demonstrate practical implementation of enterprise-style data engineering concepts using Fabric Lakehouse, Spark SQL, and dynamic pipelines.
+This project was built to demonstrate practical Microsoft Fabric Data Engineering implementation using modern Lakehouse architecture principles.
+
+The implementation focuses on:
+
+* Dynamic orchestration
+* Metadata-driven ingestion
+* Incremental processing
+* Scalable Lakehouse architecture
+* Enterprise-style pipeline design
 
 ---
 
 # Author
 
-Senthamilarasu V M
+**Senthamilarasu V M**
 
-BI Lead | Power BI Developer | Microsoft Fabric Enthusiast
+BI Lead | Power BI Developer | Microsoft Fabric Developer
