@@ -146,24 +146,12 @@ Files/
 
 Ensure:
 
-* File names match the values inside `config_ingestion`
+* File names match the values inside `config_ingestion`(table we are about to create)
 * Folder structure matches configured source paths
 * CSV and JSON files are uploaded to the correct folders
 * The current implementation ingests `cust_info.csv` dynamically from a GitHub raw HTTP source
 
 These files are dynamically ingested by the metadata-driven pipeline to create Bronze Delta tables.
-
----
-
-## 3. Create Config Table
-
-Run notebook:
-
-```text
-00_NB_CONFIG_INGESTION
-```
-
-This notebook creates and populates the metadata-driven configuration table used by the ingestion pipeline.
 
 ---
 
@@ -189,6 +177,64 @@ https://raw.githubusercontent.com/
 The remaining dynamic path is maintained inside the `config_ingestion` table.
 
 This allows the pipeline to dynamically ingest GitHub files.
+
+---
+
+## 3. Create Config Table
+
+Run notebook:
+
+```text
+00_NB_CONFIG_INGESTION
+```
+
+This notebook creates and populates the metadata-driven configuration table used by the ingestion pipeline.
+
+---
+
+# Notebook Configuration
+
+Before running notebooks:
+
+Select:
+
+```text
+Spark SQL
+```
+
+as the notebook language.
+
+Although:
+
+```text
+%%sql
+```
+
+is already used inside notebooks, manually selecting Spark SQL helps avoid execution inconsistencies.
+
+---
+
+# Default Lakehouse Configuration
+
+After importing notebooks, you may encounter errors like:
+"Default Lakehouse is not accessible" or "Couldn't load artifact"
+
+1. Remove the old Lakehouse reference
+2. Click **Add Data Items**
+3. From OneLake catalog
+4. Select the correct Lakehouse
+5. Click **... → Set as Default Lakehouse**
+6. Restart the Spark session
+
+### Why this is needed
+
+The notebook retains a reference to an old Lakehouse ID, even if a Lakehouse with the same name exists. Fabric notebooks bind to Lakehouse ID, not name.
+
+Setting the correct default Lakehouse ensures:
+
+* Delta tables are accessible
+* SQL objects resolve correctly
+* Notebook execution uses the correct Lakehouse context
 
 ---
 
@@ -263,51 +309,6 @@ Validation checks include:
 * Null checks
 * Duplicate checks
 * Bronze data quality validation
-
----
-
-# Notebook Configuration
-
-Before running notebooks:
-
-Select:
-
-```text
-Spark SQL
-```
-
-as the notebook language.
-
-Although:
-
-```text
-%%sql
-```
-
-is already used inside notebooks, manually selecting Spark SQL helps avoid execution inconsistencies.
-
----
-
-# Default Lakehouse Configuration
-
-After importing notebooks, you may encounter errors like:
-"Default Lakehouse is not accessible"
-
-1. Click **Add Data**
-2. Select the correct Lakehouse
-3. Click **... → Set as Default Lakehouse**
-4. Remove the old Lakehouse reference
-5. Restart the Spark session
-
-### Why this is needed
-
-The notebook retains a reference to an old Lakehouse ID, even if a Lakehouse with the same name exists. Fabric notebooks bind to Lakehouse ID, not name.
-
-Setting the correct default Lakehouse ensures:
-
-* Delta tables are accessible
-* SQL objects resolve correctly
-* Notebook execution uses the correct Lakehouse context
 
 ---
 
