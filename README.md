@@ -133,7 +133,6 @@ erp
 Files/
 │
 ├── crm/
-│   ├── cust_info.csv
 │   ├── sales_details.csv
 │   └── prd_info.json
 │
