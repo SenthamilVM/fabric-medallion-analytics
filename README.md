@@ -149,6 +149,7 @@ Ensure:
 * File names match the values inside `config_ingestion`
 * Folder structure matches configured source paths
 * CSV and JSON files are uploaded to the correct folders
+* The current implementation ingests `cust_info.csv` dynamically from a GitHub raw HTTP source
 
 These files are dynamically ingested by the metadata-driven pipeline to create Bronze Delta tables.
 
