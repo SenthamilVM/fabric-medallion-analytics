@@ -96,7 +96,66 @@ sales_lakehouse
 
 ---
 
-## 2. Create Config Table
+## 2. Upload Source Files
+
+Upload the CSV and JSON source files into:
+
+```text
+Lakehouse → Files
+```
+
+### Steps
+
+1. Open:
+
+```text
+sales_lakehouse
+```
+
+2. Navigate to:
+
+```text
+Files
+```
+
+3. Create the following folders if they do not exist:
+
+```text
+crm
+erp
+```
+
+4. Upload the corresponding CSV and JSON files into the appropriate folders.
+
+### Expected Folder Structure
+
+```text
+Files/
+│
+├── crm/
+│   ├── cust_info.csv
+│   ├── sales_details.csv
+│   └── prd_info.json
+│
+└── erp/
+    ├── CUST_AZ12.csv
+    ├── LOC_A101.csv
+    └── PX_CAT_G1V2.csv
+```
+
+### Important
+
+Ensure:
+
+* File names match the values inside `config_ingestion`
+* Folder structure matches configured source paths
+* CSV and JSON files are uploaded to the correct folders
+
+These files are dynamically ingested by the metadata-driven pipeline to create Bronze Delta tables.
+
+---
+
+## 3. Create Config Table
 
 Run notebook:
 
@@ -133,7 +192,7 @@ This allows the pipeline to dynamically ingest GitHub files.
 
 ---
 
-## 3. Create Watermark Table
+## 4. Create Watermark Table
 
 Run notebook:
 
@@ -142,23 +201,6 @@ Run notebook:
 ```
 
 This creates the watermark table used for incremental loading.
-
----
-
-## 4. Upload Source Files
-
-Upload the CSV and JSON files into:
-
-```text
-Lakehouse → Files
-```
-
-### Important
-
-Ensure:
-
-* File names match the values inside `config_ingestion`
-* Folder structure matches configured source paths
 
 ---
 
