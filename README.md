@@ -254,7 +254,43 @@ This creates the watermark table used for incremental loading.
 
 ## 5. Import Pipeline
 
-Import the pipeline:
+### Important
+
+Before importing the pipeline, create a **Workspace Identity** for the workspace.
+
+This identity is used by Microsoft Fabric to authenticate and securely connect pipeline activities such as Notebook execution, Semantic Model refresh, and other connected resources.
+
+### Steps to create Workspace Identity
+
+Navigate to:
+
+```text
+Workspace Settings → Workspace Identity
+```
+
+Click:
+
+```text
+Create Workspace Identity
+```
+
+### Why this is required
+
+If Workspace Identity is not created before importing the pipeline, notebook activities may fail with errors similar to:
+
+```text
+AuthKind WorkspaceIdentity did not have accessToken specified
+```
+
+---
+
+## Import Pipeline
+
+Create a new pipeline and import the following pipeline `.zip` file.
+
+### Important
+
+Do NOT extract the `.zip` file before importing.
 
 ```text
 PL_INGEST_TRANSFORM_BRONZE_TO_GOLD
@@ -262,9 +298,64 @@ PL_INGEST_TRANSFORM_BRONZE_TO_GOLD
 
 ---
 
+## Configure Pipeline Connections
+
+During pipeline import, configure the following connections:
+
+#### 1. GitHub HTTP Connection
+
+* Connection Type: `HTTP`
+* Base URL:
+
+```text
+https://raw.githubusercontent.com/
+```
+
+#### 2. Lakehouse Connection
+
+Select the following Lakehouse:
+
+```text
+sales_lakehouse
+```
+
+#### 3. Notebook Connection
+
+Configure the notebook connection using:
+
+* Connection Type: `Notebook`
+* Authentication Kind: `Workspace Identity`
+* Privacy Level: `None`
+
+#### 4. Semantic Model Connection
+
+Configure using:
+
+* Connection Type: `Power BI Semantic Model`
+* Authentication Kind: `Organizational Account`
+* Sign in if prompted
+* Privacy Level: `None`
+
+#### 5. Office 365 Email Connection
+
+Configure using:
+
+* Connection Type: `Office 365 Outlook`
+* Authentication Kind: `Organizational Account`
+* Sign in if prompted
+* Privacy Level: `None`
+
+
+---
+
 ## 6. Disable Incremental Activities Initially
 
 Before the first pipeline execution:
+
+Make sure the following activities are activated. If not, Activate.
+
+* Lookup
+* Foreach 
 
 Deactivate the following activities temporarily:
 
@@ -287,6 +378,7 @@ This ensures only Bronze ingestion is executed during the initial setup.
 
 ## 7. Run Pipeline
 
+Validate the pipeline before running it. Rename the pipeline if required.
 Run the pipeline manually.
 
 Once completed successfully:
