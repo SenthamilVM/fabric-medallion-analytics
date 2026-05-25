@@ -385,6 +385,14 @@ Once completed successfully:
 
 * 6 Bronze Delta tables will be created
 
+### Pipeline Orchestration Design
+
+A `ForEach` activity was used to dynamically iterate through all source configurations stored in the `config_ingestion` metadata table. This approach enables scalable, metadata-driven ingestion without creating separate pipelines for each source file.
+
+`If` activities were used inside the `ForEach` loop to route different source types and file formats (CSV, JSON, GitHub HTTP sources) to the appropriate ingestion logic dynamically during execution.
+
+For the current project scope, `If` conditions were intentionally chosen over alternatives such as `Switch` activities to keep the orchestration logic simple, readable and easier to debug while handling a limited number of ingestion scenarios.
+
 ---
 
 ## 8. Validate Bronze Layer
