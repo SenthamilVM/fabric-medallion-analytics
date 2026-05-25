@@ -544,6 +544,10 @@ Make sure all activities are activated again, including:
 
 * Incremental notebook activities
 
+Configure the notebooks:
+  * NB_Incremental_Load_Bronze_To_Silver -> select the right workspace -> select the notebook `05_NB_SILVER_INCREMENTAL_LOAD`
+  * NB_Incremental_Load_Silver_To_Gold -> select the right workspace -> select the notebook `08_NB_GOLD_INCREMENTAL_LOAD`
+
 The pipeline also includes:
 
 * Semantic Model Refresh activity
