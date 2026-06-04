@@ -520,8 +520,11 @@ Run notebook:
 09_NB_INCREMENTAL_TEST_DATA_LOAD
 ```
 
-This notebook manually inserts new records into the source tables to simulate newly arrived data.
+This notebook manually inserts new records into the source tables to simulate newly arrived data. 
 
+```text
+Note: Always use future order_dt to simulate.
+```
 ---
 
 ## 15. Validate Existing Row Counts
