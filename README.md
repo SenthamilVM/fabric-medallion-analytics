@@ -290,7 +290,7 @@ Create a new pipeline and import the following pipeline `.zip` file.
 
 ### Important
 
-Do NOT extract the `.zip` file before importing.
+Do NOT extract the `.zip` file before importing. Rename the pipeline if required.
 
 ```text
 PL_INGEST_TRANSFORM_BRONZE_TO_GOLD
