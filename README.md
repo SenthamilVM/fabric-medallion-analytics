@@ -582,18 +582,18 @@ Inside Copy Activity:
 Ensure table action is set to:
 
 ```text
-Append
+Overwrite
 ```
 
 instead of:
 
 ```text
-Overwrite
+Append
 ```
 
-### Why Append is required
+### Why Overwrite is used
 
-Incremental processing should preserve existing Bronze records and append only newly arrived records.
+The source files (CSV, JSON, and GitHub files) are treated as full snapshots and are reprocessed during each pipeline execution.
 
 Using:
 
@@ -601,7 +601,17 @@ Using:
 Overwrite
 ```
 
-would replace the Bronze data during every execution.
+ensures that the Bronze layer always contains the latest raw version of the source data and prevents duplicate records from accumulating across multiple pipeline runs.
+
+Incremental processing is implemented in the Silver layer using watermark-based logic, where only newly arrived records are propagated to downstream layers.
+
+Using:
+
+```text
+Append
+```
+
+would reload the entire source file during every execution and create duplicate records in the Bronze tables.
 
 ---
 
