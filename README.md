@@ -677,12 +677,13 @@ Validation checks include:
 
 The repository includes screenshots for:
 
-* Pipeline execution
-* Incremental loading
-* Notebook execution
-* Bronze, Silver, and Gold tables
-* Semantic Model configuration
 * Architecture diagram
+* Pipeline execution
+* Notebooks
+* Bronze, Silver and Gold tables
+* Semantic Model configuration
+* Data Lineage
+* Files uploaded in lakehouse
 
 ---
 
