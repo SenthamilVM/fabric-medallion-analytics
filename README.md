@@ -512,19 +512,33 @@ This ensures:
 
 # Incremental Load Testing
 
-## 14. Insert Incremental Test Records
+## 14. Simulate New Source Data
 
-Run notebook:
+To test incremental processing, replace the original source file with the incremental test file.
 
-```text
-09_NB_INCREMENTAL_TEST_DATA_LOAD
-```
-
-This notebook manually inserts new records into the source tables to simulate newly arrived data. 
+Example:
 
 ```text
-Note: Always use future order_dt to simulate.
+sales_details_incremental.csv
 ```
+
+Rename the file to:
+
+```text
+sales_details.csv
+```
+
+and upload it to the same Lakehouse Files location, replacing the existing file.
+
+The incremental test file contains all existing records along with an additional record:
+
+```text
+999999,P001,12345,20260425,20250105,20250110,1000,2,500
+```
+
+This simulates newly arrived source data before executing the pipeline again.
+
+> **Note:** Use a future `order_dt` value when creating incremental test records to ensure they are detected by the watermark-based incremental logic.
 ---
 
 ## 15. Validate Existing Row Counts
