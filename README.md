@@ -546,7 +546,7 @@ This simulates newly arrived source data before executing the pipeline again.
 Run notebook:
 
 ```text
-10_NB_INCREMENTAL_LOAD_VALIDATION
+09_NB_INCREMENTAL_LOAD_VALIDATION
 ```
 
 This captures row counts before incremental execution.
