@@ -256,6 +256,8 @@ This creates the watermark table used for incremental loading.
 
 ### Important
 
+`Creating a Notebook Connection object for items located inside the same workspace is entirely optional. If you go to the pipeline notebook activity settings, clear the Connection box entirely, and run it inline, Fabric will use your personal Admin permissions. The notebook will run instantly without requiring any Workspace Identity configurations. Create the Workspace Identity if required by following the below instructions.`
+
 Before importing the pipeline, create a **Workspace Identity** for the workspace.
 
 This identity is used by Microsoft Fabric to authenticate and securely connect pipeline activities such as Notebook execution, Semantic Model refresh, and other connected resources.
@@ -276,12 +278,20 @@ Create Workspace Identity
 
 ### Why this is required
 
+The Workspace Identity Needs Explicit Workspace Permissions and does not automatically inherit access to its own workspace items.
+
+We must add the identity to the workspace using the following steps:
+
+* Go to your Fabric Workspace and click Manage Access.
+* Click Add people or groups.
+* Search for the exact name of your Workspace Identity (not your own name) - We can get this name in workspace identity under workspace settings.
+* Grant it the Contributor or Member role and click Save.
+
 If Workspace Identity is not created before importing the pipeline, notebook activities may fail with errors similar to:
 
 ```text
 AuthKind WorkspaceIdentity did not have accessToken specified
 ```
-
 ---
 
 ## Import Pipeline
